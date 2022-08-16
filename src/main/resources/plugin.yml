@@ -1,0 +1,5 @@
+name: AfteroweBany
+author: 'AfterMC.pl Team'
+version: '@pluginVersion@'
+description: '@pluginDescription@'
+main: pl.aftermc.bans.AfteroweBany

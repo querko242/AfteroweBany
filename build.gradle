@@ -1,0 +1,63 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+allprojects {
+    group 'pl.aftermc'
+    version '2.1'
+
+    apply plugin: 'java-library'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    java {
+        withSourcesJar()
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
+        maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
+    }
+}
+
+dependencies {
+
+    // okaeri config library
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.6"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.6"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.6"
+
+    // HikariCP
+    implementation "com.zaxxer:HikariCP:4.0.3"
+
+    // bukkit stuff
+    shadow "org.spigotmc:spigot-api:1.19.1-R0.1-SNAPSHOT"
+}
+
+processResources {
+    filter(ReplaceTokens, tokens: [
+            pluginVersion: project.version,
+            pluginDescription: "Plugin na karanie graczy | Pobierz ze strony AfterMC.pl"
+    ])
+}
+
+shadowJar {
+    archiveFileName = "AfteroweBany ${project.version}.jar"
+    relocate "eu.okaeri", "pl.aftermc.bans.lib.okaeri"
+    relocate "com.zaxxer", "pl.aftermc.bans.lib"
+
+    exclude "org/slf4j/**"
+}
+
+idea {
+    project {
+        jdkName = "17"
+    }
+}
